@@ -2,19 +2,29 @@ package com.jeffgodwyll.android.qod.app.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.format.Time;
 import android.util.Log;
 
+import com.jeffgodwyll.android.qod.app.MainActivity;
 import com.jeffgodwyll.android.qod.app.R;
 import com.jeffgodwyll.android.qod.app.data.QuotesContract;
 
@@ -46,9 +56,8 @@ public class QuotesSyncAdapter extends AbstractThreadedSyncAdapter {
     };
 
     // these indices must match the projection
-   // private static final int INDEX_WEATHER_ID = 0;
-    private static final int INDEX_QUOTE = 1;
-    private static final int INDEX_AUTHOR= 2;
+    private static final int INDEX_QUOTE = 0;
+    private static final int INDEX_AUTHOR = 1;
 
     public QuotesSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -211,7 +220,7 @@ public class QuotesSyncAdapter extends AbstractThreadedSyncAdapter {
 //                        QuotesContract.QuotesEntry.COLUMN_DATE + " <= ?",
 //                        new String[] {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
 
-//                notifyWeather();
+                notifyWeather();
             }
 
             Log.d(LOG_TAG, "Sync Complete. " + contentValuesVector.size() + " Inserted");
@@ -222,87 +231,84 @@ public class QuotesSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-//    private void notifyWeather() {
-//        Context context = getContext();
-//        //checking the last update and notify if it' the first of the day
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-//        String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
-//        boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
-//                Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
-//
-//        if ( displayNotifications ) {
-//
-//            String lastNotificationKey = context.getString(R.string.pref_last_notification);
-//            long lastSync = prefs.getLong(lastNotificationKey, 0);
-//
-//            if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
-//                // Last sync was more than 1 day ago, let's send a notification with the weather.
-////                String locationQuery = Utility.getPreferredLocation(context);
-//
-//                Uri weatherUri = QuotesContract.QuotesEntry.CONTENT_URI;
-//
-//                // we'll query our contentProvider, as always
-//                Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
-//
-//                if (cursor.moveToFirst()) {
-////                    int weatherId = cursor.getInt(INDEX_WEATHER_ID);
-//                    String quote = cursor.getString(INDEX_QUOTE);
+    private void notifyWeather() {
+        Context context = getContext();
+        //checking the last update and notify if it' the first of the day
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
+        boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
+                Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
+
+        if ( displayNotifications ) {
+
+            String lastNotificationKey = context.getString(R.string.pref_last_notification);
+            long lastSync = prefs.getLong(lastNotificationKey, 0);
+
+            if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
+                // Last sync was more than 1 day ago, let's send a notification with the weather.
+//                String locationQuery = Utility.getPreferredLocation(context);
+
+                Uri weatherUri = QuotesContract.QuotesEntry.CONTENT_URI;
+
+                // we'll query our contentProvider, as always
+                Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
+
+                if (cursor.moveToFirst()) {
+                    String quote = cursor.getString(INDEX_QUOTE);
 //                    String author = cursor.getString(INDEX_AUTHOR);
-//
-//                    // TODO: fix notification icon
-////                    Resources resources = context.getResources();
-////
-////                    String title = context.getString(R.string.app_name);
-////
-////                    // Define the text of the quote.
-////                    String contentText = String.format(context.getString(R.string.format_notification),
-////                            desc,
-////                            Utility.formatTemperature(context, high),
-////                            Utility.formatTemperature(context, low));
-//
-//                    // NotificationCompatBuilder is a very convenient way to build backward-compatible
-//                    // notifications.  Just throw in some data.
-//
-//                    // TODO: Fix notifiction
-////                    NotificationCompat.Builder mBuilder =
-////                            new NotificationCompat.Builder(getContext())
-//////                                    .setColor(resources.getColor(R.color.sunshine_light_blue))
-//////                                    .setSmallIcon(iconId)
-//////                                    .setLargeIcon(largeIcon)
-//////                                    .setContentTitle(title)
-////                                    .setContentText(quote);
-//
-//                    // Make something interesting happen when the user clicks on the notification.
-//                    // In this case, opening the app is sufficient.
-//                    Intent resultIntent = new Intent(context, MainActivity.class);
-//
-//                    // The stack builder object will contain an artificial back stack for the
-//                    // started Activity.
-//                    // This ensures that navigating backward from the Activity leads out of
-//                    // your application to the Home screen.
-//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-//                    stackBuilder.addNextIntent(resultIntent);
-//                    PendingIntent resultPendingIntent =
-//                            stackBuilder.getPendingIntent(
-//                                    0,
-//                                    PendingIntent.FLAG_UPDATE_CURRENT
-//                            );
-//                    mBuilder.setContentIntent(resultPendingIntent);
-//
-//                    NotificationManager mNotificationManager =
-//                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//                    // WEATHER_NOTIFICATION_ID allows you to update the notification later on.
-//                    mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
-//
-//                    //refreshing last sync
-//                    SharedPreferences.Editor editor = prefs.edit();
-//                    editor.putLong(lastNotificationKey, System.currentTimeMillis());
-//                    editor.commit();
-//                }
-//                cursor.close();
-//            }
-//        }
-//    }
+
+                    // TODO: fix notification icon
+                    Resources resources = context.getResources();
+
+                    String title = context.getString(R.string.app_name);
+
+                    // Define the text of the quote.
+//                    String contentText = String.format(context.getString(R.string.format_notification),
+//                            quote);
+
+                    // NotificationCompatBuilder is a very convenient way to build backward-compatible
+                    // notifications.  Just throw in some data.
+
+                    // TODO: Fix notifiction
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(getContext())
+                                    .setColor(resources.getColor(R.color.sunshine_light_blue))
+                                    .setSmallIcon(R.drawable.ic_logo)
+//                                    .setLargeIcon(R.dra)
+                                    .setContentTitle(title)
+                                    .setContentText(quote);
+
+                    // Make something interesting happen when the user clicks on the notification.
+                    // In this case, opening the app is sufficient.
+                    Intent resultIntent = new Intent(context, MainActivity.class);
+
+                    // The stack builder object will contain an artificial back stack for the
+                    // started Activity.
+                    // This ensures that navigating backward from the Activity leads out of
+                    // your application to the Home screen.
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
+
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    // WEATHER_NOTIFICATION_ID allows you to update the notification later on.
+                    mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
+
+                    //refreshing last sync
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putLong(lastNotificationKey, System.currentTimeMillis());
+                    editor.commit();
+                }
+                cursor.close();
+            }
+        }
+    }
 
     /**
      * Helper method to handle insertion of a new location in the weather database.
