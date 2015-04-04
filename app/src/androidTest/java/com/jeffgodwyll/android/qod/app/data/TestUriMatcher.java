@@ -30,12 +30,12 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final long TEST_DATE = 1419033600L;  // December 20th, 2014
     private static final long TEST_LOCATION_ID = 10L;
 
-    // content://com.jeffgodwyll.android.qod.app/weather"
+    // content://com.jeffgodwyll.android.qod.app/quotes"
     private static final Uri TEST_WEATHER_DIR = QuotesContract.QuotesEntry.CONTENT_URI;
-    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = QuotesContract.QuotesEntry.buildWeatherLocation(LOCATION_QUERY);
-    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = QuotesContract.QuotesEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
+//    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = QuotesContract.QuotesEntry.buildWeatherLocation(LOCATION_QUERY);
+//    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = QuotesContract.QuotesEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
     // content://com.jeffgodwyll.android.qod.app/location"
-    private static final Uri TEST_LOCATION_DIR = QuotesContract.LocationEntry.CONTENT_URI;
+//    private static final Uri TEST_LOCATION_DIR = QuotesContract.LocationEntry.CONTENT_URI;
 
     /*
         Students: This function tests that your UriMatcher returns the correct integer value
@@ -45,13 +45,13 @@ public class TestUriMatcher extends AndroidTestCase {
     public void testUriMatcher() {
         UriMatcher testMatcher = QuotesProvider.buildUriMatcher();
 
-        assertEquals("Error: The WEATHER URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_DIR), QuotesProvider.WEATHER);
-        assertEquals("Error: The WEATHER WITH LOCATION URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), QuotesProvider.WEATHER_WITH_LOCATION);
-        assertEquals("Error: The WEATHER WITH LOCATION AND DATE URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR), QuotesProvider.WEATHER_WITH_LOCATION_AND_DATE);
-        assertEquals("Error: The LOCATION URI was matched incorrectly.",
-                testMatcher.match(TEST_LOCATION_DIR), QuotesProvider.LOCATION);
+        assertEquals("Error: The QUOTES URI was matched incorrectly.",
+                testMatcher.match(TEST_WEATHER_DIR), QuotesProvider.QUOTES);
+//        assertEquals("Error: The QUOTES WITH LOCATION URI was matched incorrectly.",
+//                testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), QuotesProvider.WEATHER_WITH_LOCATION);
+//        assertEquals("Error: The QUOTES WITH LOCATION AND DATE URI was matched incorrectly.",
+//                testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR), QuotesProvider.WEATHER_WITH_LOCATION_AND_DATE);
+//        assertEquals("Error: The LOCATION URI was matched incorrectly.",
+//                testMatcher.match(TEST_LOCATION_DIR), QuotesProvider.LOCATION);
     }
 }

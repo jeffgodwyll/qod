@@ -21,93 +21,25 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class QuotesProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
+    static final int QUOTES = 1;
+
+
     private QuotesDbHelper mOpenHelper;
 
-    static final int WEATHER = 100;
-    static final int WEATHER_WITH_LOCATION = 101;
-    static final int WEATHER_WITH_LOCATION_AND_DATE = 102;
-    static final int LOCATION = 300;
-
-    private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
-
-    static{
-        sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
-        sWeatherByLocationSettingQueryBuilder.setTables(
-                QuotesContract.QuotesEntry.TABLE_NAME + " INNER JOIN " +
-                        QuotesContract.LocationEntry.TABLE_NAME +
-                        " ON " + QuotesContract.QuotesEntry.TABLE_NAME +
-                        "." + QuotesContract.QuotesEntry.COLUMN_LOC_KEY +
-                        " = " + QuotesContract.LocationEntry.TABLE_NAME +
-                        "." + QuotesContract.LocationEntry._ID);
-    }
-
-    private static final String sLocationSettingSelection =
-            QuotesContract.LocationEntry.TABLE_NAME+
-                    "." + QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? ";
-    private static final String sLocationSettingWithStartDateSelection =
-            QuotesContract.LocationEntry.TABLE_NAME+
-                    "." + QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    QuotesContract.QuotesEntry.COLUMN_DATE + " >= ? ";
-
-    private static final String sLocationSettingAndDaySelection =
-            QuotesContract.LocationEntry.TABLE_NAME +
-                    "." + QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
-                    QuotesContract.QuotesEntry.COLUMN_DATE + " = ? ";
-
-    private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = QuotesContract.QuotesEntry.getLocationSettingFromUri(uri);
-        long startDate = QuotesContract.QuotesEntry.getStartDateFromUri(uri);
-
-        String[] selectionArgs;
-        String selection;
-
-        if (startDate == 0) {
-            selection = sLocationSettingSelection;
-            selectionArgs = new String[]{locationSetting};
-        } else {
-            selectionArgs = new String[]{locationSetting, Long.toString(startDate)};
-            selection = sLocationSettingWithStartDateSelection;
-        }
-
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-    }
-
-    private Cursor getWeatherByLocationSettingAndDate(
-            Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = QuotesContract.QuotesEntry.getLocationSettingFromUri(uri);
-        long date = QuotesContract.QuotesEntry.getDateFromUri(uri);
-
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                projection,
-                sLocationSettingAndDaySelection,
-                new String[]{locationSetting, Long.toString(date)},
-                null,
-                null,
-                sortOrder
-        );
-    }
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     /*
         Students: Here is where you need to create the UriMatcher. This UriMatcher will
-        match each URI to the WEATHER, WEATHER_WITH_LOCATION, WEATHER_WITH_LOCATION_AND_DATE,
+        match each URI to the QUOTES, WEATHER_WITH_LOCATION, WEATHER_WITH_LOCATION_AND_DATE,
         and LOCATION integer constants defined above.  You can test this by uncommenting the
         testUriMatcher test within TestUriMatcher.
      */
-    static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         // I know what you're thinking.  Why create a UriMatcher when you can use regular
         // expressions instead?  Because you're not crazy, that's why.
 
@@ -118,11 +50,8 @@ public class QuotesProvider extends ContentProvider {
         final String authority = QuotesContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, QuotesContract.PATH_WEATHER, WEATHER);
-        matcher.addURI(authority, QuotesContract.PATH_WEATHER + "/*", WEATHER_WITH_LOCATION);
-        matcher.addURI(authority, QuotesContract.PATH_WEATHER + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
-
-        matcher.addURI(authority, QuotesContract.PATH_LOCATION, LOCATION);
+//        matcher.addURI(authority, QuotesContract.PATH_QUOTES, QUOTES);
+        matcher.addURI(authority, QuotesContract.PATH_QUOTES, QUOTES);
         return matcher;
     }
 
@@ -149,14 +78,10 @@ public class QuotesProvider extends ContentProvider {
 
         switch (match) {
             // Student: Uncomment and fill out these two cases
-            case WEATHER_WITH_LOCATION_AND_DATE:
-                return QuotesContract.QuotesEntry.CONTENT_ITEM_TYPE;
-            case WEATHER_WITH_LOCATION:
+            case QUOTES:
                 return QuotesContract.QuotesEntry.CONTENT_TYPE;
-            case WEATHER:
-                return QuotesContract.QuotesEntry.CONTENT_TYPE;
-            case LOCATION:
-                return QuotesContract.LocationEntry.CONTENT_TYPE;
+//                return QuotesContract.QuotesEntry.CONTENT_URI;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -169,34 +94,12 @@ public class QuotesProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // "weather/*/*"
-            case WEATHER_WITH_LOCATION_AND_DATE:
-            {
-                retCursor = getWeatherByLocationSettingAndDate(uri, projection, sortOrder);
-                break;
-            }
-            // "weather/*"
-            case WEATHER_WITH_LOCATION: {
-                retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
-                break;
-            }
-            // "weather"
-            case WEATHER: {
+            case UriMatcher.NO_MATCH:
+                throw new UnsupportedOperationException("Root uri: " + uri);
+            // "quotes"
+            case QUOTES: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         QuotesContract.QuotesEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-            // "location"
-            case LOCATION: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        QuotesContract.LocationEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -210,6 +113,8 @@ public class QuotesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
+
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
@@ -224,23 +129,16 @@ public class QuotesProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case WEATHER: {
-                normalizeDate(values);
+            case QUOTES: {
+//                normalizeDate(values);
                 long _id = db.insert(QuotesContract.QuotesEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
-                    returnUri = QuotesContract.QuotesEntry.buildWeatherUri(_id);
+                    returnUri = QuotesContract.QuotesEntry.buildQuotesUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            case LOCATION: {
-                long _id = db.insert(QuotesContract.LocationEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = QuotesContract.LocationEntry.buildLocationUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -256,13 +154,9 @@ public class QuotesProvider extends ContentProvider {
         // this makes delete all rows return the number of rows deleted
         if ( null == selection ) selection = "1";
         switch (match) {
-            case WEATHER:
+            case QUOTES:
                 rowsDeleted = db.delete(
                         QuotesContract.QuotesEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case LOCATION:
-                rowsDeleted = db.delete(
-                        QuotesContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -274,13 +168,13 @@ public class QuotesProvider extends ContentProvider {
         return rowsDeleted;
     }
 
-    private void normalizeDate(ContentValues values) {
-        // normalize the date value
-        if (values.containsKey(QuotesContract.QuotesEntry.COLUMN_DATE)) {
-            long dateValue = values.getAsLong(QuotesContract.QuotesEntry.COLUMN_DATE);
-            values.put(QuotesContract.QuotesEntry.COLUMN_DATE, QuotesContract.normalizeDate(dateValue));
-        }
-    }
+//    private void normalizeDate(ContentValues values) {
+//        // normalize the date value
+//        if (values.containsKey(QuotesContract.QuotesEntry.COLUMN_DATE)) {
+//            long dateValue = values.getAsLong(QuotesContract.QuotesEntry.COLUMN_DATE);
+//            values.put(QuotesContract.QuotesEntry.COLUMN_DATE, QuotesContract.normalizeDate(dateValue));
+//        }
+//    }
 
     @Override
     public int update(
@@ -290,15 +184,12 @@ public class QuotesProvider extends ContentProvider {
         int rowsUpdated;
 
         switch (match) {
-            case WEATHER:
-                normalizeDate(values);
+            case QUOTES:
+//                normalizeDate(values);
                 rowsUpdated = db.update(QuotesContract.QuotesEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
-            case LOCATION:
-                rowsUpdated = db.update(QuotesContract.LocationEntry.TABLE_NAME, values, selection,
-                        selectionArgs);
-                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -313,12 +204,12 @@ public class QuotesProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case WEATHER:
+            case QUOTES:
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
+//                        normalizeDate(value);
                         long _id = db.insert(QuotesContract.QuotesEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;

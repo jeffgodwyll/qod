@@ -55,18 +55,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final String[] DETAIL_COLUMNS = {
             QuotesEntry.TABLE_NAME + "." + QuotesContract.QuotesEntry._ID,
-            QuotesContract.QuotesEntry.COLUMN_DATE,
-            QuotesContract.QuotesEntry.COLUMN_SHORT_DESC,
-            QuotesContract.QuotesEntry.COLUMN_MAX_TEMP,
-            QuotesEntry.COLUMN_MIN_TEMP,
-            QuotesEntry.COLUMN_HUMIDITY,
-            QuotesEntry.COLUMN_PRESSURE,
-            QuotesContract.QuotesEntry.COLUMN_WIND_SPEED,
-            QuotesEntry.COLUMN_DEGREES,
-            QuotesContract.QuotesEntry.COLUMN_WEATHER_ID,
-            // This works because the QuotesProvider returns location data joined with
-            // weather data, even though they're stored in two different tables.
-            QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING
+          //  QuotesContract.QuotesEntry.COLUMN_DATE,
+//            QuotesContract.QuotesEntry.COLUMN_SHORT_DESC,
+//            QuotesContract.QuotesEntry.COLUMN_MAX_TEMP,
+//            QuotesEntry.COLUMN_MIN_TEMP,
+//            QuotesEntry.COLUMN_HUMIDITY,
+//            QuotesEntry.COLUMN_PRESSURE,
+//            QuotesContract.QuotesEntry.COLUMN_WIND_SPEED,
+//            QuotesEntry.COLUMN_DEGREES,
+//            QuotesContract.QuotesEntry.COLUMN_WEATHER_ID,
+//            // This works because the QuotesProvider returns location data joined with
+//            // weather data, even though they're stored in two different tables.
+//            QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING
+            QuotesContract.QuotesEntry.COLUMN_QUOTE_CONTENT,
+            QuotesContract.QuotesEntry.COLUMN_AUTHOR,
+           // QuotesContract.QuotesEntry.COLUMN_QUOTE_LENGTH
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
@@ -91,6 +94,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
+    private TextView mQuotesView;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -115,6 +119,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+//        mQuotesView = (TextView) rootView.findViewById(R.id.)
         return rootView;
     }
 
@@ -149,16 +154,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onActivityCreated(savedInstanceState);
     }
 
-    void onLocationChanged( String newLocation ) {
-        // replace the uri, since the location has changed
-        Uri uri = mUri;
-        if (null != uri) {
-            long date = QuotesEntry.getDateFromUri(uri);
-            Uri updatedUri = QuotesContract.QuotesEntry.buildWeatherLocationWithDate(newLocation, date);
-            mUri = updatedUri;
-            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
-        }
-    }
+//    void onLocationChanged( String newLocation ) {
+//        // replace the uri, since the location has changed
+//        Uri uri = mUri;
+//        if (null != uri) {
+//            long date = QuotesEntry.getDateFromUri(uri);
+//            Uri updatedUri = QuotesContract.QuotesEntry.buildWeatherLocationWithDate(newLocation, date);
+//            mUri = updatedUri;
+//            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+//        }
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -188,10 +193,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             // Read date from cursor and update views for day of week and date
             long date = data.getLong(COL_WEATHER_DATE);
-            String friendlyDateText = Utility.getDayName(getActivity(), date);
-            String dateText = Utility.getFormattedMonthDay(getActivity(), date);
-            mFriendlyDateView.setText(friendlyDateText);
-            mDateView.setText(dateText);
+//            String friendlyDateText = Utility.getDayName(getActivity(), date);
+//            String dateText = Utility.getFormattedMonthDay(getActivity(), date);
+//            mFriendlyDateView.setText(friendlyDateText);
+//            mDateView.setText(dateText);
 
             // Read description from cursor and update view
             String description = data.getString(COL_WEATHER_DESC);
@@ -201,32 +206,32 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mIconView.setContentDescription(description);
 
             // Read high temperature from cursor and update view
-            boolean isMetric = Utility.isMetric(getActivity());
-
-            double high = data.getDouble(COL_WEATHER_MAX_TEMP);
-            String highString = Utility.formatTemperature(getActivity(), high);
-            mHighTempView.setText(highString);
+//            boolean isMetric = Utility.isMetric(getActivity());
+//
+//            double high = data.getDouble(COL_WEATHER_MAX_TEMP);
+//            String highString = Utility.formatTemperature(getActivity(), high);
+//            mHighTempView.setText(highString);
 
             // Read low temperature from cursor and update view
-            double low = data.getDouble(COL_WEATHER_MIN_TEMP);
-            String lowString = Utility.formatTemperature(getActivity(), low);
-            mLowTempView.setText(lowString);
+//            double low = data.getDouble(COL_WEATHER_MIN_TEMP);
+//            String lowString = Utility.formatTemperature(getActivity(), low);
+//            mLowTempView.setText(lowString);
 
             // Read humidity from cursor and update view
-            float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
-            mHumidityView.setText(getActivity().getString(R.string.format_humidity, humidity));
+//            float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
+//            mHumidityView.setText(getActivity().getString(R.string.format_humidity, humidity));
 
             // Read wind speed and direction from cursor and update view
-            float windSpeedStr = data.getFloat(COL_WEATHER_WIND_SPEED);
-            float windDirStr = data.getFloat(COL_WEATHER_DEGREES);
-            mWindView.setText(Utility.getFormattedWind(getActivity(), windSpeedStr, windDirStr));
+//            float windSpeedStr = data.getFloat(COL_WEATHER_WIND_SPEED);
+//            float windDirStr = data.getFloat(COL_WEATHER_DEGREES);
+//            mWindView.setText(Utility.getFormattedWind(getActivity(), windSpeedStr, windDirStr));
 
             // Read pressure from cursor and update view
             float pressure = data.getFloat(COL_WEATHER_PRESSURE);
             mPressureView.setText(getActivity().getString(R.string.format_pressure, pressure));
 
             // We still need this for the share intent
-            mForecast = String.format("%s - %s - %s/%s", dateText, description, high, low);
+//            mForecast = String.format("%s - %s - %s/%s", dateText, description, high, low);
 
             // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {

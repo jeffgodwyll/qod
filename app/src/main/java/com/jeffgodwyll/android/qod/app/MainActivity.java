@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity implements QuotesFragment.Ca
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLocation = Utility.getPreferredLocation(this);
+//        mLocation = Utility.getPreferredLocation(this);
 
         setContentView(R.layout.activity_main);
         if (findViewById(R.id.weather_detail_container) != null) {
@@ -89,19 +89,19 @@ public class MainActivity extends ActionBarActivity implements QuotesFragment.Ca
     @Override
     protected void onResume() {
         super.onResume();
-        String location = Utility.getPreferredLocation( this );
-        // update the location in our second pane using the fragment manager
-            if (location != null && !location.equals(mLocation)) {
-            QuotesFragment ff = (QuotesFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
-            if ( null != ff ) {
-                ff.onLocationChanged();
-            }
-            DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
-            if ( null != df ) {
-                df.onLocationChanged(location);
-            }
-            mLocation = location;
-        }
+//        String location = Utility.getPreferredLocation( this );
+//        // update the location in our second pane using the fragment manager
+//            if (location != null && !location.equals(mLocation)) {
+//            QuotesFragment ff = (QuotesFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+//            if ( null != ff ) {
+//                ff.onLocationChanged();
+//            }
+//            DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+//            if ( null != df ) {
+//                df.onLocationChanged(location);
+//            }
+//            mLocation = location;
+//        }
     }
 
     @Override

@@ -78,41 +78,28 @@ public class QuotesAdapter extends CursorAdapter {
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
                 // Get weather icon
-                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
-                        cursor.getInt(QuotesFragment.COL_WEATHER_CONDITION_ID)));
+                viewHolder.descriptionView.setText(cursor.getString(QuotesFragment.COL_QUOTE));
+//                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
+//                        cursor.getInt(QuotesFragment.COL_QUOTE)));
                 break;
             }
             case VIEW_TYPE_FUTURE_DAY: {
                 // Get weather icon
-                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
-                        cursor.getInt(QuotesFragment.COL_WEATHER_CONDITION_ID)));
+                viewHolder.descriptionView.setText(cursor.getString(QuotesFragment.COL_QUOTE));
+//                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
+//                        cursor.getInt(QuotesFragment.COL_AUTHOR)));
                 break;
             }
         }
 
-        // Read date from cursor
-        long dateInMillis = cursor.getLong(QuotesFragment.COL_WEATHER_DATE);
-        // Find TextView and set formatted date on it
-        viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
-
-        // Read weather forecast from cursor
-        String description = cursor.getString(QuotesFragment.COL_WEATHER_DESC);
+        // Read quote from cursor
+        String quote = cursor.getString(QuotesFragment.COL_QUOTE);
         // Find TextView and set weather forecast on it
-        viewHolder.descriptionView.setText(description);
+        viewHolder.descriptionView.setText(quote);
 
-        // For accessibility, add a content description to the icon field
-        viewHolder.iconView.setContentDescription(description);
+        // For accessibility, add a content quote to the icon field
+        viewHolder.iconView.setContentDescription(quote);
 
-        // Read user preference for metric or imperial temperature units
-        boolean isMetric = Utility.isMetric(context);
-
-        // Read high temperature from cursor
-        double high = cursor.getDouble(QuotesFragment.COL_WEATHER_MAX_TEMP);
-        viewHolder.highTempView.setText(Utility.formatTemperature(context, high));
-
-        // Read low temperature from cursor
-        double low = cursor.getDouble(QuotesFragment.COL_WEATHER_MIN_TEMP);
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context, low));
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {

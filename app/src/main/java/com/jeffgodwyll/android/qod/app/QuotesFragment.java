@@ -15,7 +15,6 @@
  */
 package com.jeffgodwyll.android.qod.app;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,27 +58,16 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
             QuotesContract.QuotesEntry.TABLE_NAME + "." + QuotesContract.QuotesEntry._ID,
-            QuotesContract.QuotesEntry.COLUMN_DATE,
-            QuotesContract.QuotesEntry.COLUMN_SHORT_DESC,
-            QuotesContract.QuotesEntry.COLUMN_MAX_TEMP,
-            QuotesContract.QuotesEntry.COLUMN_MIN_TEMP,
-            QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING,
-            QuotesContract.QuotesEntry.COLUMN_WEATHER_ID,
-            QuotesContract.LocationEntry.COLUMN_COORD_LAT,
-            QuotesContract.LocationEntry.COLUMN_COORD_LONG
+            QuotesContract.QuotesEntry.COLUMN_QUOTE_CONTENT,
+            QuotesContract.QuotesEntry.COLUMN_AUTHOR,
+            // QuotesContract.QuotesEntry.COLUMN_QUOTE_LENGTH
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
-    static final int COL_WEATHER_ID = 0;
-    static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
-    static final int COL_WEATHER_MAX_TEMP = 3;
-    static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
+    static final int COL_QUOTES_ID = 0;
+    static  final int COL_QUOTE = 1;
+    static final int COL_AUTHOR = 2;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -120,7 +107,7 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
 //            return true;
 //        }
         if (id == R.id.action_map) {
-            openPreferredLocationInMap();
+//            openPreferredLocationInMap();
             return true;
         }
 
@@ -136,6 +123,7 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
         mQuotesAdapter = new QuotesAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        //View rootView = inflater.inflate(R.layout.list_item_forecast_today, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -148,13 +136,13 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-                    String locationSetting = Utility.getPreferredLocation(getActivity());
-                    ((Callback) getActivity())
-                            .onItemSelected(QuotesContract.QuotesEntry.buildWeatherLocationWithDate(
-                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-                            ));
-                }
+//                if (cursor != null) {
+//                    String locationSetting = Utility.getPreferredLocation(getActivity());
+//                    ((Callback) getActivity())
+//                            .onItemSelected(QuotesContract.QuotesEntry.buildWeatherLocationWithDate(
+//                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
+//                            ));
+//                }
                 mPosition = position;
             }
         });
@@ -182,39 +170,39 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     // since we read the location when we create the loader, all we need to do is restart things
-    void onLocationChanged( ) {
-        updateWeather();
-        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
-    }
+//    void onLocationChanged( ) {
+//        updateWeather();
+//        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+//    }
 
     private void updateWeather() {
         QuotesSyncAdapter.syncImmediately(getActivity());
     }
 
-    private void openPreferredLocationInMap() {
-        // Using the URI scheme for showing a location found on a map.  This super-handy
-        // intent can is detailed in the "Common Intents" page of Android's developer site:
-        // http://developer.android.com/guide/components/intents-common.html#Maps
-        if ( null != mQuotesAdapter) {
-            Cursor c = mQuotesAdapter.getCursor();
-            if ( null != c && c.moveToFirst()) {
-                c.moveToPosition(0);
-                String posLat = c.getString(COL_COORD_LAT);
-                String posLong = c.getString(COL_COORD_LONG);
-                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(geoLocation);
-
-                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
-                }
-            }
-
-        }
-    }
+//    private void openPreferredLocationInMap() {
+//        // Using the URI scheme for showing a location found on a map.  This super-handy
+//        // intent can is detailed in the "Common Intents" page of Android's developer site:
+//        // http://developer.android.com/guide/components/intents-common.html#Maps
+//        if ( null != mQuotesAdapter) {
+//            Cursor c = mQuotesAdapter.getCursor();
+//            if ( null != c && c.moveToFirst()) {
+//                c.moveToPosition(0);
+//                String posLat = c.getString(COL_COORD_LAT);
+//                String posLong = c.getString(COL_COORD_LONG);
+//                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+//
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setData(geoLocation);
+//
+//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                    startActivity(intent);
+//                } else {
+//                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+//                }
+//            }
+//
+//        }
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -236,18 +224,20 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
         // dates after or including today.
 
         // Sort order:  Ascending, by date.
-        String sortOrder = QuotesContract.QuotesEntry.COLUMN_DATE + " ASC";
+//        String sortOrder = QuotesContract.QuotesEntry.COLUMN_DATE + " ASC";
+//
+//        String locationSetting = Utility.getPreferredLocation(getActivity());
+//        Uri weatherForLocationUri = QuotesContract.QuotesEntry.buildWeatherLocationWithStartDate(
+//                locationSetting, System.currentTimeMillis());
 
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = QuotesContract.QuotesEntry.buildWeatherLocationWithStartDate(
-                locationSetting, System.currentTimeMillis());
+
 
         return new CursorLoader(getActivity(),
-                weatherForLocationUri,
+                QuotesContract.BASE_CONTENT_URI,
                 FORECAST_COLUMNS,
                 null,
                 null,
-                sortOrder);
+                null);
     }
 
     @Override
