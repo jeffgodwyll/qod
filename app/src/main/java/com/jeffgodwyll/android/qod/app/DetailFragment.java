@@ -45,7 +45,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     static final String DETAIL_URI = "URI";
 
-    private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+    private static final String SHARE_HASHTAG = " #QuotesApp";
 
     private ShareActionProvider mShareActionProvider;
     private String mForecast;
@@ -123,7 +123,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + FORECAST_SHARE_HASHTAG);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + SHARE_HASHTAG);
         return shareIntent;
     }
 
@@ -167,7 +167,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mIconView.setContentDescription(quote);
 
             // We still need this for the share intent
-//            mForecast = String.format("%s - %s - %s/%s", dateText, quote, high, low);
+            mForecast = String.format("\"%s\" by %s", quote, author);
 
             // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {
