@@ -136,13 +136,12 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-//                if (cursor != null) {
+                if (cursor != null) {
 //                    String locationSetting = Utility.getPreferredLocation(getActivity());
-//                    ((Callback) getActivity())
-//                            .onItemSelected(QuotesContract.QuotesEntry.buildWeatherLocationWithDate(
-//                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-//                            ));
-//                }
+                    ((Callback) getActivity())
+                            .onItemSelected(QuotesContract.QuotesEntry.CONTENT_URI
+                            );
+                }
                 mPosition = position;
             }
         });
