@@ -1,50 +1,43 @@
 <!-- Master layout. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/detail_quote_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="testing stuff"
+        android:fontFamily="sans-serif-condensed"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textSize="40sp"
+        android:textColor="@color/grey_700"
+        android:gravity="center_vertical|center_horizontal" />
 
     <LinearLayout
-        android:gravity="center_vertical"
-        android:layout_gravity="left"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_gravity="right">
 
-        <LinearLayout
-            android:gravity="center_horizontal"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/detail_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/detail_forecast_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:textColor="@color/grey_700" />
-                <TextView
-                    android:id="@+id/detail_author_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="@color/grey_700" />
-            </LinearLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/detail_author_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="author"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/grey_700"
+            android:textStyle="italic" />
 
     </LinearLayout>
 
 </LinearLayout>
+
+

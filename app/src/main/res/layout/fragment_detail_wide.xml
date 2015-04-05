@@ -1,107 +1,92 @@
-<!-- Master layout. -->
+<!--
+&lt;!&ndash; Master layout. &ndash;&gt;
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout
+    &lt;!&ndash;<LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:padding="16dp" >
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:weightSum="1">&ndash;&gt;
 
         <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:minWidth="56dp"
-            android:orientation="vertical" >
-
-            <!-- Header: Day, Date -->
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_day_textview"
-                android:layout_height="wrap_content"
-                android:minWidth="120dp"
-                android:layout_width="wrap_content"
-                android:textSize="24sp" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_date_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="@color/grey_700"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <!-- Main content: high, low, art, weather state -->
-        <LinearLayout
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginLeft="16dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="1">
 
             <TextView
-                android:fontFamily="sans-serif-light"
-                android:id="@+id/detail_high_textview"
+                android:fontFamily="sans-serif-condensed"
+                android:id="@+id/detail_quote_textview"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textSize="96sp" />
-
-            <TextView
-                android:id="@+id/detail_low_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:textColor="@color/grey_700"
-                android:textSize="48sp" />
-
-            <!-- Humidity, wind, pressure -->
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_humidity_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_pressure_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_wind_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge" />
+                android:textAppearance="?android:textAppearanceLarge"
+                android:text="quote testing  stufff asdfasdfasdf la sdfhasd"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:gravity="center_horizontal"
+        <TextView
+            android:id="@+id/detail_author_textview"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical">
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/grey_700"
+            android:text="author"
+            android:gravity="right"
+            android:layout_gravity="right"
+            android:layout_weight="1" />
+    &lt;!&ndash;</LinearLayout>&ndash;&gt;
+</ScrollView>-->
 
-            <ImageView
-                android:id="@+id/detail_icon"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+<!-- Master layout. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:gravity="center">
 
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_forecast_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="@color/grey_700"
-                android:textAppearance="?android:textAppearanceLarge"/>
-        </LinearLayout>
+    <TextView
+        android:id="@+id/detail_quote_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Quote"
+        android:fontFamily="sans-serif-condensed"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textSize="40sp"
+        android:textColor="@color/grey_700"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_gravity="right"
+        android:baselineAligned="false"
+        android:clickable="false"
+        android:measureWithLargestChild="false">
+
+        <TextView
+            android:id="@+id/detail_author_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="author"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/grey_700"
+            android:textStyle="italic"
+            android:singleLine="false"
+            android:gravity="right" />
+
     </LinearLayout>
-</ScrollView>
+
+</LinearLayout>
+
+

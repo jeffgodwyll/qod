@@ -51,12 +51,6 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
     private static final String[] FORECAST_COLUMNS = {
-            // In this case the id needs to be fully qualified with a table name, since
-            // the content provider joins the location & weather tables in the background
-            // (both have an _id column)
-            // On the one hand, that's annoying.  On the other, you can search the weather table
-            // using the location set by the user, which is only in the Location table.
-            // So the convenience is worth it.
             QuotesContract.QuotesEntry.TABLE_NAME + "." + QuotesContract.QuotesEntry._ID,
             QuotesContract.QuotesEntry.COLUMN_QUOTE_CONTENT,
             QuotesContract.QuotesEntry.COLUMN_AUTHOR,
@@ -93,7 +87,7 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecastfragment, menu);
+//        inflater.inflate(R.menu.quotesfragment, menu);
     }
 
     @Override
@@ -102,14 +96,12 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        //for debugging purposes
 //        if (id == R.id.action_refresh) {
 //            updateWeather();
 //            return true;
 //        }
-        if (id == R.id.action_map) {
-//            openPreferredLocationInMap();
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -178,31 +170,6 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
         QuotesSyncAdapter.syncImmediately(getActivity());
     }
 
-//    private void openPreferredLocationInMap() {
-//        // Using the URI scheme for showing a location found on a map.  This super-handy
-//        // intent can is detailed in the "Common Intents" page of Android's developer site:
-//        // http://developer.android.com/guide/components/intents-common.html#Maps
-//        if ( null != mQuotesAdapter) {
-//            Cursor c = mQuotesAdapter.getCursor();
-//            if ( null != c && c.moveToFirst()) {
-//                c.moveToPosition(0);
-//                String posLat = c.getString(COL_COORD_LAT);
-//                String posLong = c.getString(COL_COORD_LONG);
-//                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
-//
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setData(geoLocation);
-//
-//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-//                    startActivity(intent);
-//                } else {
-//                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
-//                }
-//            }
-//
-//        }
-//    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // When tablets rotate, the currently selected list item needs to be saved.
@@ -219,24 +186,16 @@ public class QuotesFragment extends Fragment implements LoaderManager.LoaderCall
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
 
-        // To only show current and future dates, filter the query to return weather only for
-        // dates after or including today.
-
+        // TODO: Fix no of duplicate quotes on home screen
         // Sort order:  Ascending, by date.
-//        String sortOrder = QuotesContract.QuotesEntry.COLUMN_DATE + " ASC";
-//
-//        String locationSetting = Utility.getPreferredLocation(getActivity());
-//        Uri weatherForLocationUri = QuotesContract.QuotesEntry.buildWeatherLocationWithStartDate(
-//                locationSetting, System.currentTimeMillis());
-
-
+        String sortOrder = QuotesContract.QuotesEntry.COLUMN_QUOTES_ID + " ASC";
 
         return new CursorLoader(getActivity(),
                 QuotesContract.BASE_CONTENT_URI,
                 FORECAST_COLUMNS,
                 null,
                 null,
-                null);
+                sortOrder);
     }
 
     @Override

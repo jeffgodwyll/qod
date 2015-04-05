@@ -55,18 +55,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final String[] DETAIL_COLUMNS = {
             QuotesEntry.TABLE_NAME + "." + QuotesContract.QuotesEntry._ID,
-          //  QuotesContract.QuotesEntry.COLUMN_DATE,
-//            QuotesContract.QuotesEntry.COLUMN_SHORT_DESC,
-//            QuotesContract.QuotesEntry.COLUMN_MAX_TEMP,
-//            QuotesEntry.COLUMN_MIN_TEMP,
-//            QuotesEntry.COLUMN_HUMIDITY,
-//            QuotesEntry.COLUMN_PRESSURE,
-//            QuotesContract.QuotesEntry.COLUMN_WIND_SPEED,
-//            QuotesEntry.COLUMN_DEGREES,
-//            QuotesContract.QuotesEntry.COLUMN_WEATHER_ID,
-//            // This works because the QuotesProvider returns location data joined with
-//            // weather data, even though they're stored in two different tables.
-//            QuotesContract.LocationEntry.COLUMN_LOCATION_SETTING
             QuotesContract.QuotesEntry.COLUMN_QUOTE_CONTENT,
             QuotesContract.QuotesEntry.COLUMN_AUTHOR,
            // QuotesContract.QuotesEntry.COLUMN_QUOTE_LENGTH
@@ -96,8 +84,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
-        mQuotesView = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+//        mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
+        mQuotesView = (TextView) rootView.findViewById(R.id.detail_quote_textview);
         mAuthorView = (TextView) rootView.findViewById(R.id.detail_author_textview);
         return rootView;
     }
@@ -164,7 +152,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mAuthorView.setText(author);
 
             // For accessibility, add a content quote to the icon field
-            mIconView.setContentDescription(quote);
+//            mIconView.setContentDescription(quote);
 
             // We still need this for the share intent
             mForecast = String.format("\"%s\" by %s", quote, author);

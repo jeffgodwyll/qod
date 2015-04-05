@@ -73,12 +73,8 @@ public class QuotesContract {
 
         public static final String TABLE_NAME = "quotes";
 
-        // Column with the foreign key into the location table.
-//        public static final String COLUMN_LOC_KEY = "location_id";
-        // Date, stored as long in milliseconds since the epoch
-        //public static final String COLUMN_DATE = "date";
         // Weather id as returned by API, to identify the icon to be used
-        public static final String COLUMN_QUOTES_ID = "quotes_id";
+        public static final String COLUMN_QUOTES_ID = "_id";
 
         // Short description and long description of the weather, as provided by API.
         // e.g "clear" vs "sky is clear".
